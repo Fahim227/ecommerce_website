@@ -12,6 +12,81 @@
 <link rel="stylesheet" href="{% static 'store/css/custom.css' %}">
 
 <style>
+
+
+.category-circle {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+    margin: auto;
+    border: 2px solid #f28124;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.category-circle img {
+  padding: 20px;
+    width: 100%;
+    height: 100%;
+    object-fit: f;
+    display: block;
+}
+
+.category-circle h6 {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin: 0;
+    padding: 5px 0;
+    background: rgba(0, 0, 0, 0.5); /* semi-transparent black overlay */
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.category-circle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+
+
+
+.nav-item.dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0; /* optional */
+}
+
+.navbar .dropdown-menu {
+    transition: all 0.3s ease;
+    border-radius: 0.25rem;
+}
+.category-dropdown-img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.category-dropdown-placeholder {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    color: #f28124;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+
+
+
     .navbar-brand img {
     width: 80px;
     height: 80px;
@@ -63,6 +138,33 @@
         <li class="nav-item">
           <a class="nav-link fw-semibold " href="{% url 'store:products' %}">Products</a>
         </li>
+        
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="productsDropdown" role="button">
+        Categories
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="productsDropdown">
+        {% for category in categories %}
+        <li>
+            <a class="dropdown-item d-flex align-items-center" href="{% url 'store:products_by_category' category.slug %}">
+                {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-dropdown-img me-2">
+                {% else %}
+                <div class="category-dropdown-placeholder me-2">
+                    {{ category.name|slice:":1" }}
+                </div>
+                {% endif %}
+                {{ category.name }}
+            </a>
+        </li>
+        {% empty %}
+        <li><span class="dropdown-item">No categories</span></li>
+        {% endfor %}
+    </ul>
+</li>
+
+
       </ul>
     </div>
   </div>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib import messages
-from .models import Product
+from .models import Product, Category
 from .forms import OrderForm
 from django.core.paginator import Paginator
 
@@ -11,9 +11,31 @@ from django.db.models import Q
 def home(request):
     query = request.GET.get('q', '')
     products = Product.objects.all()
+    categories = Category.objects.all()
     if query:
         products = products.filter(Q(title__icontains=query) | Q(short_description__icontains=query))
-    return render(request, 'store/home.html', {'products': products, 'query': query})
+    return render(request, 'store/home.html', {'products': products, 'query': query,'categories':categories})
+
+
+def categories_list(request):
+    categories = Category.objects.all()
+    return render(request, 'store/categories.html', {'categories': categories})
+
+def products_by_category(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    products = category.products.all()
+    
+    # Optional pagination
+    from django.core.paginator import Paginator
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'store/products_by_category.html', {
+        'category': category,
+        'page_obj': page_obj,
+    })
+
 
 
 def product_detail(request, slug):

@@ -1,11 +1,32 @@
 from django.db import models
-
+import uuid
 from django.db import models
 from django.utils.text import slugify
 
+
+class Category(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='categories/', blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = 'Categories'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
     title = models.CharField(max_length=200)
     short_description = models.CharField(max_length=255, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
     description = models.TextField(blank=True)
     price = models.IntegerField(null=False, blank=False)
     image = models.ImageField(upload_to='products/', blank=True, null=True)  # Main image
@@ -25,6 +46,8 @@ class Product(models.Model):
         return self.title
 
 class ProductImage(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
+
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='products/')
 
@@ -33,6 +56,7 @@ class ProductImage(models.Model):
 
 
 class Order(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders')
     full_name = models.CharField(max_length=200)
     email = models.EmailField()
