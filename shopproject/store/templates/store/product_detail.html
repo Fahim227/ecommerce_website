@@ -1,0 +1,167 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .product-container { background: #fff; border-radius: 8px; padding: 2rem; box-shadow: 0 0 15px rgba(0,0,0,0.08); margin-top: 2rem; }
+        .product-title { font-size: 1.7rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .current-price { font-size: 1.5rem; font-weight: 700; }
+        .old-price { text-decoration: line-through; color: #6c757d; }
+        /* .thumbnail { cursor: pointer; border: 2px solid transparent; } */
+        /* .thumbnail.active { border-color: #0d6efd; } */
+        .payment-option-box { border: 1px solid #dee2e6; padding: 1rem; border-radius: 8px; cursor: pointer; }
+        .payment-option-box.active { border-color: #0d6efd; background-color: #e7f1ff; }
+        .buy-btn { background-color: #0d6efd; color: #fff; font-size: 1.1rem; padding: 0.75rem 2rem; border-radius: 6px; width: 100%; }
+        .add-to-cart-btn { background-color: #f28124; color: #fff; font-size: 1.1rem; padding: 0.75rem 2rem; border-radius: 6px; width: 100%; }
+        .thumbnail {
+    cursor: pointer;
+    border: 2px solid transparent;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+}
+
+.thumbnail.active {
+    border-color: #f28124;
+}
+
+.qty-group {
+  width: 90px;                /* slightly bigger than 80px to avoid breaking */
+}
+
+.qty-group .btn {
+  padding: 2px 6px;           /* tighter buttons */
+  font-size: 1.0rem;
+}
+
+.qty-group input {
+  padding: 2px;
+  font-size: 0.8rem;
+  height: 40px;
+  min-width: 50px;            /* ensures it doesn’t collapse */
+  text-align: center;
+}
+
+#mainImage {
+    width: 500px;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #dee2e6;
+    transition: 0.3s ease;
+}
+
+
+    </style>
+</head>
+<body>
+
+<div class="container product-container">
+    <div class="row">
+        <!-- LEFT: Images -->
+        <div class="col-md-5 text-center">
+            <img id="mainImage" src="{{ product.image.url }}" class="img-fluid rounded mb-3" alt="{{ product.title }}">
+
+            <!-- {% if gallery_images %}
+            <div class="d-flex justify-content-center gap-2">
+                {% for img in gallery_images %}
+                    <img src="{{ img.image.url }}" class="thumbnail rounded {% if forloop.first %}active{% endif %}" onclick="changeImage(this)">
+                {% endfor %}
+            </div>
+            {% endif %} -->
+
+            {% if gallery_images %}
+    <div class="d-flex flex-wrap justify-content-center gap-2 mt-2">
+        {% for img in gallery_images %}
+            <img src="{{ img.image.url }}" class="thumbnail {% if forloop.first %}active{% endif %}" onclick="changeImage(this)">
+        {% endfor %}
+    </div>
+{% endif %}
+
+        </div>
+
+        <!-- RIGHT: Product Details -->
+        <div class="col-md-7">
+            <h2 class="product-title">{{ product.title }}</h2>
+
+            <div class="d-flex flex-wrap gap-2 mb-2">
+                
+                <span class="badge bg-success">In Stock</span>
+                <span class="badge bg-secondary">Rating: {{ product.rating|default:"0" }} ⭐</span>
+                <span class="badge bg-dark">Reviews: {{ product.review_count|default:"0" }}</span>
+            </div>
+
+            <div class="mb-3">
+
+                   <p class="text-muted">{{ product.short_description }}</p>
+            <p>{{ product.description|linebreaks }}</p>
+    <div class="current-price display-6 fw-bold text-dark">
+        ৳ {{ product.discounted_price }}
+    </div>
+
+    {% if product.discount_percentage %}
+        <div class="text-muted fs-5  ">
+            <span class="old-price">৳ {{ product.price }}</span>
+            <span class="text-danger fw-semibold">
+                -{{ product.discount_percentage }}%
+            </span>
+        </div>
+
+    {% endif %}
+</div>
+
+
+         
+
+            
+
+            <!-- Quantity + Buy -->
+            <div class="mt-4 d-flex align-items-center gap-3">
+               
+        
+                    <a href="{% url 'store:order_create' product.slug %}" class="buy-btn btn" style="background-color: #f28124;color: white; ">
+  Buy Now
+</a>
+                <!-- <button class="add-to-cart-btn  btn">Add to Cart</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function changeImage(el) {
+        document.getElementById('mainImage').src = el.src;
+        document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function selectPayment(el) {
+        document.querySelectorAll('.payment-option-box').forEach(box => box.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function decreaseQty() {
+        let qty = document.getElementById('qty');
+        if (parseInt(qty.value) > 1) qty.value = parseInt(qty.value) - 1;
+    }
+
+    function increaseQty() {
+        let qty = document.getElementById('qty');
+        qty.value = parseInt(qty.value) + 1;
+    }
+
+    
+</script>
+
+</body>
+</html>
+
+{% endblock %}

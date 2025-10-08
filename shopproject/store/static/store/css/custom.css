@@ -1,0 +1,12 @@
+body { padding-bottom: 40px;    
+    background-color: #fcfcfa; 
+}
+.card-img-top { object-fit: cover; height: 180px; }
+
+ .theme-color {
+        color: #f28124;  
+    }
+
+     .nav {
+        background-color:  #ffffff;  
+    }

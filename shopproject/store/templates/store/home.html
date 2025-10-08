@@ -1,0 +1,75 @@
+{% extends 'store/base.html' %}
+{% block title %}Home - My Shop{% endblock %}
+{% block content %}
+
+
+<!-- Banner Slider Section -->
+
+
+<div id="bannerCarousel" class="carousel slide mb-4 rounded" data-bs-ride="carousel" style="height: 350px; border-radius: 16px;">
+  <!-- Indicators/dots -->
+  <!-- <div class="carousel-indicators">
+    <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div> -->
+
+  <!-- Slides -->
+  <!-- <div class="carousel-inner" style="height: 100%;">
+    <div class="carousel-item active" style="height: 100%;">
+      <img src="/media/products/banner1.jpg" class="d-block w-100" alt="Banner 1" style="height: 100%; object-fit: cover;">
+      <div class="carousel-caption d-none d-md-block">
+        <h2>Welcome to My Shop!</h2>
+        <p>Check out our latest products and offers</p>
+        <a href="#products" class="btn btn-light btn-lg">Shop Now</a>
+      </div>
+    </div>
+    <div class="carousel-item" style="height: 100%;">
+      <img src="/media/products/banner1.jpg" class="d-block w-100" alt="Banner 2" style="height: 100%; object-fit: cover;">
+      <div class="carousel-caption d-none d-md-block">
+        <h2>Exclusive Deals!</h2>
+        <p>Don’t miss our limited-time offers</p>
+        <a href="#products" class="btn btn-light btn-lg">Shop Now</a>
+      </div>
+    </div>
+    <div class="carousel-item" style="height: 100%;">
+      <img src="/media/products/banner1.jpg" class="d-block w-100" alt="Banner 3" style="height: 100%; object-fit: cover;">
+      <div class="carousel-caption d-none d-md-block">
+        <h2>New Arrivals</h2>
+        <p>Discover the latest products in our collection</p>
+        <a href="#products" class="btn btn-light btn-lg">Shop Now</a>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Controls -->
+  <!-- <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button> -->
+
+<div class="carousel-item active" style="height: 100%;">
+      <img src="/media/products/banner1.jpg" class="d-block w-100" alt="Banner 1" style="height: 100%; object-fit: cover; border-radius: 16px">
+     
+    </div>
+</div>
+
+
+
+<!-- Products Section -->
+
+<h1 class="mb-4">Products</h1>
+<div class="row g-3">
+  {% for product in products %}
+    {% include "store/_store_product_card.html" %}
+  {% empty %}
+    <p>No products found.</p>
+  {% endfor %}
+</div>
+
+</div>
+{% endblock %}
