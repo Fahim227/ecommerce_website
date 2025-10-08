@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib import messages
 from .models import Product
 from .forms import OrderForm
-
+from django.core.paginator import Paginator
 
 from django.db.models import Q
 
@@ -16,9 +16,6 @@ def home(request):
     return render(request, 'store/home.html', {'products': products, 'query': query})
 
 
-from django.shortcuts import render, get_object_or_404
-from .models import Product
-
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
     gallery_images = product.images.all()
@@ -27,6 +24,14 @@ def product_detail(request, slug):
         'gallery_images': gallery_images
     })
 
+def all_products(request):
+    products = Product.objects.all()  
+    
+    paginator = Paginator(products, 12)  # 12 products per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'store/all_products.html', {'page_obj': page_obj})
 
 
 def order_create(request, slug):
