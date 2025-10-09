@@ -55,15 +55,39 @@ class ProductImage(models.Model):
         return f"Image for {self.product.title}"
 
 
+# class Order(models.Model):
+#     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders')
+#     full_name = models.CharField(max_length=200)
+#     email = models.EmailField()
+#     phone = models.CharField(max_length=30)
+#     address = models.TextField()
+#     quantity = models.PositiveIntegerField(default=1)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f'Order #{self.id} - {self.product.title} ({self.full_name})'
+    
+
 class Order(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders')
-    full_name = models.CharField(max_length=200)
+    full_name = models.CharField(max_length=100)
     email = models.EmailField()
-    phone = models.CharField(max_length=30)
+    phone = models.CharField(max_length=20)
     address = models.TextField()
-    quantity = models.PositiveIntegerField(default=1)
+    payment_method = models.CharField(max_length=20, default="COD")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Order #{self.id} - {self.product.title} ({self.full_name})'
+        return f"Order #{self.id} - {self.full_name}"
+
+
+class OrderItem(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
+    order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
+    product = models.ForeignKey("Product", on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def subtotal(self):
+        return self.price * self.quantity

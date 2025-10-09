@@ -1,0 +1,54 @@
+{% extends "store/base.html" %}
+{% block title %}Order Confirmed{% endblock %}
+
+{% block content %}
+<style>
+  .success-container {
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .success-icon {
+    font-size: 5rem;
+    color: #28a745;
+    margin-bottom: 20px;
+    animation: pop 0.5s ease-out;
+  }
+  @keyframes pop {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  .success-message {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+  }
+  .redirect-msg {
+    margin-top: 10px;
+    font-size: 0.95rem;
+    color: #666;
+  }
+</style>
+
+<div class="success-container">
+  <div class="success-icon">✅</div>
+  <div class="success-message">Thank you! Your order has been confirmed!</div>
+  <div class="redirect-msg">Redirecting to home page...</div>
+</div>
+
+<script>
+  // Clear cart
+  localStorage.removeItem('picksymart_cart');
+  const cartCountElem = document.getElementById("cartCountBadge");
+  if (cartCountElem) cartCountElem.textContent = 0;
+
+  // Redirect after 5 seconds
+  setTimeout(function() {
+    window.location.href = "{% url 'store:home' %}";
+  }, 5000);
+</script>
+{% endblock %}

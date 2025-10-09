@@ -1,0 +1,35 @@
+<!-- Cart Slider Panel -->
+<div id="cartOverlay" class="cart-overlay"></div>
+
+<aside id="cartSlider" class="cart-slider">
+  <div class="cart-header d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+    <h5 class="m-0">Your Cart</h5>
+    <button id="closeCartBtn" class="btn-close" aria-label="Close cart"></button>
+  </div>
+
+  <div id="cartItems" class="cart-items p-3" style="overflow:auto; flex:1 1 auto;">
+    <!-- Items will be injected here by JS -->
+    <div class="text-center text-muted">Your cart is empty.</div>
+  </div>
+
+  <div class="cart-footer p-3 border-top">
+    <div class="d-flex justify-content-between mb-2">
+      <strong>Total</strong>
+      <strong id="cartTotal">৳0.00</strong>
+    </div>
+    <div class="d-grid">
+      <button id="checkoutBtn" class="btn btn-primary mb-2">Proceed to Checkout</button>
+      <button id="clearCartBtn" class="btn btn-outline-secondary">Clear Cart</button>
+    </div>
+  </div>
+</aside>
+
+<!-- simple toast container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 2000;">
+  <div id="cartToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="cartToastBody">Added to cart</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>

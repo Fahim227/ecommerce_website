@@ -48,18 +48,7 @@
             {% endif %}
           </div>
 
-          <!-- Quantity -->
-          <div class="mb-4">
-            <label class="form-label">Quantity</label>
-            <div class="input-group qty-group" style="width: 100px;">
-              <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQty()">-</button>
-              <input type="text" id="qty" name="quantity" class="form-control form-control-sm text-center" value="{{ form.quantity.value|default:1 }}">
-              <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQty()">+</button>
-            </div>
-            {% if form.quantity.errors %}
-              <div class="text-danger small">{{ form.quantity.errors }}</div>
-            {% endif %}
-          </div>
+         
 
           <!-- Payment Method -->
           <div class="card mb-4 shadow-sm border-0">
@@ -82,32 +71,103 @@
         </form>
       </div>
     </div>
+<!-- Right Column -->
+<div class="col-12 col-md-4">
+  <div class="card shadow-sm p-3">
+    <h5 class="fw-semibold mb-3 text-center">Your Products</h5>
 
-    <!-- Right Column: Product Info -->
-    <div class="col-12 col-md-4">
-      <div class="card shadow-sm p-3 text-center">
-        {% if product.image %}
-          <img src="{{ product.image.url }}" class="img-fluid mb-3 rounded" style="max-height: 250px;" alt="{{ product.title }}">
-        {% endif %}
-        <h5 class="card-title fw-semibold">{{ product.title }}</h5>
-        <p class="h6 text-muted mb-1">৳{{ product.price }}</p>
-        <p class="small text-secondary">{{ product.short_description }}</p>
-      </div>
-    </div>
+    {% if cart_items %}
+      {% for slug, item in cart_items.items %}
+        <div class="d-flex align-items-center mb-3 border-bottom pb-2 justify-content-between">
+          <div class="d-flex align-items-center">
+            <img src="{{ item.image }}" class="me-3 rounded" style="width:60px; height:60px; object-fit:cover;">
+            <div>
+              <p class="mb-0 fw-semibold">{{ item.name }}</p>
+              <small class="text-muted">৳{{ item.price }}</small>
+            </div>
+          </div>
+
+          <!-- Quantity Controls -->
+          <div class="d-flex align-items-center gap-1">
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseItemQty('{{ slug }}')">-</button>
+            <input type="text" class="form-control form-control-sm text-center" style="width:40px;"
+                   id="qty-{{ slug }}" value="{{ item.quantity }}" readonly>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseItemQty('{{ slug }}')">+</button>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted text-center">No products selected.</p>
+    {% endif %}
+  </div>
+</div>
+
+
+
+
 
   </div>
 </div>
 
 <!-- Quantity JS -->
 <script>
-function decreaseQty() {
-  let qty = document.getElementById("qty");
-  if (parseInt(qty.value) > 1) qty.value = parseInt(qty.value) - 1;
+
+function decreaseItemQty(slug) {
+  const input = document.getElementById(`qty-${slug}`);
+  let qty = parseInt(input.value);
+  if (qty > 1) {
+    qty--;
+    input.value = qty;
+    updateCartItem(slug, qty);
+  }
 }
 
-function increaseQty() {
-  let qty = document.getElementById("qty");
-  qty.value = parseInt(qty.value) + 1;
+function increaseItemQty(slug) {
+  const input = document.getElementById(`qty-${slug}`);
+  let qty = parseInt(input.value);
+  qty++;
+  input.value = qty;
+  updateCartItem(slug, qty);
 }
+
+// Update localStorage cart when quantity changes
+function updateCartItem(slug, qty) {
+  let cart = JSON.parse(localStorage.getItem("cart") || "{}");
+  if (cart[slug]) {
+    cart[slug].quantity = qty;
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartContainer = document.getElementById("cart-items");
+  const cartTotal = document.getElementById("cart-total");
+  const cartDataInput = document.getElementById("cart_data");
+
+  let total = 0;
+  cartContainer.innerHTML = "";
+
+  cart.forEach(item => {
+    const subtotal = item.price * item.quantity;
+    total += subtotal;
+
+    const productHTML = `
+      <div class="d-flex align-items-center mb-3">
+        <img src="${item.image}" class="me-3 rounded" style="width: 60px; height: 60px; object-fit: cover;">
+        <div>
+          <div class="fw-semibold">${item.title}</div>
+          <div class="text-muted small">৳${item.price} × ${item.quantity}</div>
+          <div class="fw-semibold">৳${subtotal}</div>
+        </div>
+      </div>
+    `;
+    cartContainer.insertAdjacentHTML("beforeend", productHTML);
+  });
+
+  cartTotal.textContent = `৳${total}`;
+  cartDataInput.value = JSON.stringify(cart);
+});
+
 </script>
 {% endblock %}
