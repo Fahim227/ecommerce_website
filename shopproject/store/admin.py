@@ -15,7 +15,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'full_name', 'email', 'phone', 'quantity', 'created_at')
+    list_display = ('id', 'full_name', 'email', 'phone', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('full_name', 'email', 'phone', 'address')
 

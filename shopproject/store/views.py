@@ -56,28 +56,134 @@ def all_products(request):
     return render(request, 'store/all_products.html', {'page_obj': page_obj})
 
 
-def order_create(request, slug):
-    product = get_object_or_404(Product, slug=slug)
-    
+# store/views.py
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt  # optional if you’re handling CSRF manually in JS (but you already do)
+def cart_checkout(request):
     if request.method == 'POST':
-        print(request.POST) 
+        cart_json = request.POST.get('cart_json')
+        if not cart_json:
+            return redirect('store:order_success')  # fallback if empty cart
+
+        try:
+            cart_data = json.loads(cart_json)
+        except json.JSONDecodeError:
+            cart_data = {}
+
+
+        # 🧩 Example: pass cart to order form template
+        return render(request, 'store/order_form.html', {
+            'cart_items': cart_data,
+        })
+
+    # Add success message
+    messages.success(request, '✅ Your order has been confirmed! Thank you.')
+    # Redirect to success page
+    return redirect('store:order_success')
+    
+
+
+import json
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product, Order, OrderItem
+from .forms import OrderForm
+
+def order_create(request, slug=None):
+    """
+    Handles both:
+    - Buy Now (single product via slug)
+    - Cart Checkout (multiple products via POST cart_json)
+    """
+    cart_items = {}
+
+    if request.method == "POST":
         form = OrderForm(request.POST)
+        cart_json = request.POST.get("cart_json")
         if form.is_valid():
-            order = form.save(commit=False)
-            order.product = product
-            order.save()
+            order = form.save()
             
+            # Process cart items if sent
+            if cart_json:
+                try:
+                    cart_items_data = json.loads(cart_json)
+                except json.JSONDecodeError:
+                    cart_items_data = {}
+
+                for slug, item in cart_items_data.items():
+                    product = Product.objects.get(slug=slug)
+                    quantity = int(item["quantity"])
+                    OrderItem.objects.create(
+                        order=order,
+                        product=product,
+                        quantity=quantity,
+                        price=product.price
+                    )
+
+            # Process single Buy Now product if slug provided and no cart
+            elif slug:
+                product = get_object_or_404(Product, slug=slug)
+                quantity = int(request.POST.get("quantity", 1))
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=quantity,
+                    price=product.price
+                )
+
             # Add success message
             messages.success(request, '✅ Your order has been confirmed! Thank you.')
-            
-            # Redirect to home page
-            return redirect(reverse('store:home'))
+            # Redirect to success page
+            return redirect('store:order_success')
         else:
             messages.error(request, '❌ There was an error with your order. Please check the details.')
     else:
         form = OrderForm()
-    
-    return render(request, 'store/order_form.html', {
-        'form': form,
-        'product': product,
+        # Prepare cart_items for template display
+        if slug and not request.GET.get("cart_checkout"):
+            product = get_object_or_404(Product, slug=slug)
+            cart_items = {
+                product.slug: {
+                    "name": product.title,
+                    "price": float(product.price),
+                    "quantity": 1,
+                    "image": product.image.url if product.image else ""
+                }
+            }
+
+    return render(request, "store/order_form.html", {
+        "form": form,
+        "cart_items": cart_items
     })
+
+
+# def order_create(request, slug):
+#     product = get_object_or_404(Product, slug=slug)
+    
+#     if request.method == 'POST':
+#         print(request.POST) 
+#         form = OrderForm(request.POST)
+#         if form.is_valid():
+#             order = form.save(commit=False)
+#             order.product = product
+#             order.save()
+            
+#             # Add success message
+#             messages.success(request, '✅ Your order has been confirmed! Thank you.')
+            
+#             # Redirect to home page
+#             return redirect(reverse('store:home'))
+#         else:
+#             messages.error(request, '❌ There was an error with your order. Please check the details.')
+#     else:
+#         form = OrderForm()
+    
+#     return render(request, 'store/order_form.html', {
+#         'form': form,
+#         'product': product,
+#     })
+
+def order_success(request):
+    return render(request, "store/order_success.html")

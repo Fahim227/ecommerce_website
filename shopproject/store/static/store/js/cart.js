@@ -36,7 +36,7 @@
 
   function updateBadge() {
     const cart = getCart();
-    const count = Object.values(cart).reduce((s, item) => s + (item.qty || 0), 0);
+    const count = Object.values(cart).reduce((s, item) => s + (item.quantity || 0), 0);
     cartCountBadge.textContent = count;
     if (count > 0) {
       cartCountBadge.classList.remove('d-none');
@@ -64,7 +64,7 @@
     let total = 0;
     keys.forEach(key => {
       const item = cart[key];
-      const subtotal = Number(item.price) * Number(item.qty);
+      const subtotal = Number(item.price) * Number(item.quantity);
       total += subtotal;
       html += `
       <div class="cart-item" data-key="${key}">
@@ -73,9 +73,9 @@
           <div class="title">${escapeHtml(item.title)}</div>
           <div class="small text-muted">${formatPrice(item.price)} each</div>
           <div class="d-flex justify-content-between align-items-center mt-2">
-            <div class="qty-controls">
+            <div class="quantity-controls">
               <button class="btn-decrease" data-key="${key}">−</button>
-              <div style="padding:0 8px;">${item.qty}</div>
+              <div style="padding:0 8px;">${item.quantity}</div>
               <button class="btn-increase" data-key="${key}">+</button>
             </div>
             <div class="text-end">
@@ -130,7 +130,7 @@
   function changeQty(key, delta) {
     const cart = getCart();
     if (!cart[key]) return;
-    cart[key].qty = Math.max(1, Number(cart[key].qty) + delta);
+    cart[key].quantity = Math.max(1, Number(cart[key].quantity) + delta);
     saveCart(cart);
     renderCart();
   }
@@ -150,14 +150,14 @@
     renderCart();
   }
 
-  // Add item to cart — accepts object param {id, title, price, image, qty}
+  // Add item to cart — accepts object param {id, title, price, image, quantity}
   function addToCart(item) {
     const cart = getCart();
     const key = String(item.id);
     if (!cart[key]) {
-      cart[key] = { ...item, qty: Number(item.qty || 1) };
+      cart[key] = { ...item, quantity: Number(item.quantity || 1) };
     } else {
-      cart[key].qty = Number(cart[key].qty || 0) + Number(item.qty || 1);
+      cart[key].quantity = Number(cart[key].quantity || 0) + Number(item.quantity || 1);
     }
     saveCart(cart);
     renderCart();
@@ -188,6 +188,10 @@
     if (cartOverlay) cartOverlay.onclick = closeCart;
     if (clearCartBtn) clearCartBtn.onclick = () => { clearCart(); };
     if (checkoutBtn) checkoutBtn.onclick = (e) => {
+    // window.location.href = "{% url 'store:order_create' %}";
+
+
+
       e.preventDefault();
       // example: redirect to checkout page and pass cart (the server can parse posted JSON)
       // We'll redirect to /cart/checkout/ and let JS POST cart there.
@@ -202,7 +206,7 @@
           title: btn.dataset.title,
           price: Number(btn.dataset.price),
           image: btn.dataset.image,
-          qty: Number(btn.dataset.qty || 1)
+          quantity: Number(btn.dataset.quantity || 1)
         };
         addToCart(data);
       };
