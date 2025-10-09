@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Order, ProductImage, Category
+from .models import Product, Order, ProductImage, Category, OrderItem
 
 
 @admin.register(Category)
@@ -23,3 +23,7 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(ProductImage)
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ('product', 'image')
+
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ['order' ]

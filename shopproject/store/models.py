@@ -83,6 +83,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
