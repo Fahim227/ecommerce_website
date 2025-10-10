@@ -15,43 +15,34 @@
 
 <style>
 
+ 
 
-.category-circle {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    text-align: center;
-    cursor: pointer;
-    margin: auto;
-    border: 2px solid #f28124;
-    transition: transform 0.3s, box-shadow 0.3s;
+ .category-slider {
+  scrollbar-width: thin;
+  scrollbar-color: #f28124 #f1f1f1;
 }
 
-.category-circle img {
-  padding: 20px;
-    width: 100%;
-    height: 100%;
-    object-fit: f;
-    display: block;
+.category-slider::-webkit-scrollbar {
+  height: 6px;
 }
 
-.category-circle h6 {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    margin: 0;
-    padding: 5px 0;
-    background: rgba(0, 0, 0, 0.5); /* semi-transparent black overlay */
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 500;
+.category-slider::-webkit-scrollbar-thumb {
+  background: #f28124;
+  border-radius: 3px;
 }
 
-.category-circle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+.category-slider::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.category-item{
+     border-radius: 12px;
+}
+
+.category-item:hover {
+  transform: scale(1.05);
+  transition: 0.2s ease;
+ 
 }
 
 
