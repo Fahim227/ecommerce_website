@@ -5,7 +5,7 @@ from django.utils.text import slugify
 
 
 class Category(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True,auto_created=True)  # Unique ID
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=120, unique=True, blank=True)
     description = models.TextField(blank=True, null=True)
@@ -23,14 +23,14 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True,auto_created=True)  # Unique ID
     title = models.CharField(max_length=200)
     short_description = models.CharField(max_length=255, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
     description = models.TextField(blank=True)
     price = models.IntegerField(null=False, blank=False)
     image = models.ImageField(upload_to='products/', blank=True, null=True)  # Main image
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=255,unique=True)
     discount_percentage = models.IntegerField(blank=True, null=True)
     rating = models.IntegerField(blank=True, null=True)
     review_count = models.IntegerField(blank=True, null=True)
@@ -46,31 +46,16 @@ class Product(models.Model):
         return self.title
 
 class ProductImage(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
-
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True,auto_created=True)  
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='products/')
 
     def __str__(self):
         return f"Image for {self.product.title}"
-
-
-# class Order(models.Model):
-#     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders')
-#     full_name = models.CharField(max_length=200)
-#     email = models.EmailField()
-#     phone = models.CharField(max_length=30)
-#     address = models.TextField()
-#     quantity = models.PositiveIntegerField(default=1)
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return f'Order #{self.id} - {self.product.title} ({self.full_name})'
     
 
 class Order(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True,auto_created=True)  
     full_name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
@@ -83,7 +68,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True)  # Unique ID
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True,primary_key=True,auto_created=True)  
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)

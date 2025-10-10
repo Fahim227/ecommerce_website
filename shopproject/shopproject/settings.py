@@ -4,7 +4,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-change-me'
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.0.103']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.0.105']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,8 +50,12 @@ WSGI_APPLICATION = 'shopproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+          'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'picksymart_db',      # your MySQL database name
+        'USER': 'root',            # your MySQL username
+        'PASSWORD': '1234',    # your MySQL password
+        'HOST': 'localhost',         # or your server IP
+        'PORT': '3306',              # default MySQL port
     }
 }
 

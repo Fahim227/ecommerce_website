@@ -3,15 +3,14 @@ from .models import Product, Order, ProductImage, Category, OrderItem
 
 
 @admin.register(Category)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug')
-    prepopulated_fields = {'name': ('slug',)}
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'id')
+    prepopulated_fields = {'name': ('id',)}
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('title', 'price')
-    prepopulated_fields = {'slug': ('title',)}
-
+    prepopulated_fields = {'id': ('title',)}
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

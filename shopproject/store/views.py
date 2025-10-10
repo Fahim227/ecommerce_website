@@ -38,8 +38,8 @@ def products_by_category(request, slug):
 
 
 
-def product_detail(request, slug):
-    product = get_object_or_404(Product, slug=slug)
+def product_detail(request, id):
+    product = get_object_or_404(Product, id=id)
     gallery_images = product.images.all()
     return render(request, 'store/product_detail.html', {
         'product': product,
@@ -91,7 +91,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Order, OrderItem
 from .forms import OrderForm
 
-def order_create(request, slug=None):
+def order_create(request, id=None):
     """
     Handles both:
     - Buy Now (single product via slug)
@@ -112,8 +112,8 @@ def order_create(request, slug=None):
                 except json.JSONDecodeError:
                     cart_items_data = {}
 
-                for slug, item in cart_items_data.items():
-                    product = Product.objects.get(slug=slug)
+                for id, item in cart_items_data.items():
+                    product = Product.objects.get(id=id)
                     quantity = int(item["quantity"])
                     OrderItem.objects.create(
                         order=order,
@@ -142,8 +142,8 @@ def order_create(request, slug=None):
     else:
         form = OrderForm()
         # Prepare cart_items for template display
-        if slug and not request.GET.get("cart_checkout"):
-            product = get_object_or_404(Product, slug=slug)
+        if id and not request.GET.get("cart_checkout"):
+            product = get_object_or_404(Product, id=id)
             cart_items = {
                 product.slug: {
                     "name": product.title,

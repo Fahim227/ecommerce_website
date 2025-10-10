@@ -39,9 +39,9 @@
     <!-- Card Body -->
     <div class="card-body d-flex flex-column">
       <!-- Product Title -->
-      <a href="{% url 'store:product_detail' product.slug %}" class="text-decoration-none">
+      <a href="{% url 'store:product_detail' product.id %}" class="text-decoration-none">
         <h6 class="card-title text-primary mb-3" style="font-size: 0.95rem; line-height: 1.4;  ">
-          {{ product.title }}
+          {{ product.title }} 
         </h6>
       </a>
       
@@ -86,7 +86,7 @@
        <div class="mt-4 d-flex align-items-center gap-3 ">
                
         
-                    <a href="{% url 'store:order_create' product.slug %}" class="buy-btn btn w-100 " style="background-color: #f28124;color: white; ">
+                    <a href="{% url 'store:order_create' product.id %}" class="buy-btn btn w-100 " style="background-color: #f28124;color: white; ">
   Buy Now
 </a>
             </div>
