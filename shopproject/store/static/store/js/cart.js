@@ -73,10 +73,13 @@
           <div class="title">${escapeHtml(item.title)}</div>
           <div class="small text-muted">${formatPrice(item.price)} each</div>
           <div class="d-flex justify-content-between align-items-center mt-2">
-            <div class="quantity-controls">
-              <button class="btn-decrease" data-key="${key}">−</button>
-              <div style="padding:0 8px;">${item.quantity}</div>
-              <button class="btn-increase" data-key="${key}">+</button>
+            <div class="quantity-controls   d-flex align-items-center gap-1">
+              <button type="button" class="btn btn-outline-secondary btn-sm btn-decrease" data-key="${key}">−</button>
+              <div >
+              <input type="text" class="form-control form-control-sm text-center" style="width:40px;"
+                   id="qty-{{ slug }}" value=${item.quantity} readonly>
+              </div>
+              <button type="button" class="btn btn-outline-secondary btn-sm btn-increase"   data-key="${key}">+</button>
             </div>
             <div class="text-end">
               <div><strong>${formatPrice(subtotal)}</strong></div>

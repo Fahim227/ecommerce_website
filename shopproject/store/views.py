@@ -4,7 +4,8 @@ from django.contrib import messages
 from .models import Product, Category
 from .forms import OrderForm
 from django.core.paginator import Paginator
-
+from django.template.loader import render_to_string
+from django.http import JsonResponse
 from django.db.models import Q
 
 
@@ -41,9 +42,22 @@ def products_by_category(request, slug):
 def product_detail(request, id):
     product = get_object_or_404(Product, id=id)
     gallery_images = product.images.all()
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)
+    
+    paginator = Paginator(related_products, 100)
+    page_number = request.GET.get('page')
+    related_products_page = paginator.get_page(page_number)
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string('store/_store_product_card.html', {
+            'related_products': related_products_page
+        }, request=request)
+        return JsonResponse({'html': html})
+
     return render(request, 'store/product_detail.html', {
         'product': product,
-        'gallery_images': gallery_images
+        'gallery_images': gallery_images[:5],
+        'related_products': related_products_page
     })
 
 def all_products(request):
