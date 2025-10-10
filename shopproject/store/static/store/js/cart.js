@@ -183,7 +183,8 @@
 
   // attach global events
   function attachGlobalEvents() {
-    if (openCartBtn) openCartBtn.onclick = (e) => { e.preventDefault(); openCart(); };
+    if (openCartBtn) openCartBtn.onclick = (e) => { 
+      e.preventDefault(); openCart(); };
     if (closeCartBtn) closeCartBtn.onclick = closeCart;
     if (cartOverlay) cartOverlay.onclick = closeCart;
     if (clearCartBtn) clearCartBtn.onclick = () => { clearCart(); };
