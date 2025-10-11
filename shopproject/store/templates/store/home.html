@@ -6,7 +6,8 @@
 <!-- Banner Slider Section -->
 
 
-<div id="bannerCarousel" class="carousel slide mb-4 rounded" data-bs-ride="carousel" style="height: 350px; border-radius: 16px;">
+<div id="bannerCarousel" class="carousel slide mb-4 rounded" data-bs-ride="carousel"
+  style="height: 350px; border-radius: 16px;">
   <!-- Indicators/dots -->
   <!-- <div class="carousel-indicators">
     <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -52,10 +53,11 @@
     <span class="visually-hidden">Next</span>
   </button> -->
 
-<div class="carousel-item active" style="height: 100%;">
-      <img src="/media/products/banner1.jpg" class="d-block w-100" alt="Banner 1" style="height: 100%; object-fit: cover; border-radius: 16px">
-     
-    </div>
+  <div class="carousel-item active" style="height: 100%;">
+    <img src="/media/products/banner1.jpg" class="d-block w-100" alt="Banner 1"
+      style="height: 100%; object-fit: cover; border-radius: 16px">
+
+  </div>
 </div>
 
 
@@ -68,21 +70,21 @@
 
   <div class="category-slider d-flex flex-row overflow-auto pb-2">
     {% for category in categories %}
-      <div class="text-center me-2 flex-shrink-0">
-        <a href="{% url 'store:products_by_category' category.slug %}" class="text-decoration-none">
-          <div class="category-item   border d-flex flex-column align-items-center justify-content-center"
-               style="width: 100px; height: 100px; background-color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            {% if category.image %}
-              <img src="{{ category.image.url }}" alt="{{ category.name }}"
-                   style="width: 45px; height: 45px; object-fit: cover; ">
-            {% else %}
-              <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
-                   style="width: 45px; height: 45px;">📦</div>
-            {% endif %}
-            <small class="text-dark mt-1" style="font-size: 10px;">{{ category.name }}</small>
-          </div>
-        </a>
-      </div>
+    <div class="text-center me-2 flex-shrink-0">
+      <a href="{% url 'store:products_by_category' category.slug %}" class="text-decoration-none">
+        <div class="category-item   border d-flex flex-column align-items-center justify-content-center"
+          style="width: 100px; height: 100px; background-color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          {% if category.image %}
+          <img src="{{ category.image.url }}" alt="{{ category.name }}"
+            style="width: 45px; height: 45px; object-fit: cover; ">
+          {% else %}
+          <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 45px; height: 45px;">📦</div>
+          {% endif %}
+          <small class="text-dark mt-1" style="font-size: 10px;">{{ category.name }}</small>
+        </div>
+      </a>
+    </div>
     {% endfor %}
   </div>
 </div>
@@ -96,9 +98,9 @@
 <h1 class="mb-4">Products</h1>
 <div class="row g-3">
   {% for product in products %}
-    {% include "store/_store_product_card.html" %}
+  {% include "store/_store_product_card.html" %}
   {% empty %}
-    <p>No products found.</p>
+  <p>No products found.</p>
   {% endfor %}
 </div>
 

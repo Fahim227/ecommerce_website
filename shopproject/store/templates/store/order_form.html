@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container py-4 px-3">
   <div class="row g-4" style="margin: 16px;">
-    
+
     <!-- Left Column: Form -->
     <div class="col-12 col-md-8">
       <div class="card shadow-sm p-4">
@@ -15,9 +15,10 @@
           <!-- Full Name -->
           <div class="mb-3">
             <label class="form-label">Full Name</label>
-            <input type="text" name="full_name" class="form-control" value="{{ form.full_name.value|default:'' }}" required>
+            <input type="text" name="full_name" class="form-control" value="{{ form.full_name.value|default:'' }}"
+              required>
             {% if form.full_name.errors %}
-              <div class="text-danger small">{{ form.full_name.errors }}</div>
+            <div class="text-danger small">{{ form.full_name.errors }}</div>
             {% endif %}
           </div>
 
@@ -26,7 +27,7 @@
             <label class="form-label">Email</label>
             <input type="email" name="email" class="form-control" value="{{ form.email.value|default:'' }}" required>
             {% if form.email.errors %}
-              <div class="text-danger small">{{ form.email.errors }}</div>
+            <div class="text-danger small">{{ form.email.errors }}</div>
             {% endif %}
           </div>
 
@@ -35,20 +36,38 @@
             <label class="form-label">Mobile Number</label>
             <input type="tel" name="phone" class="form-control" value="{{ form.phone.value|default:'' }}" required>
             {% if form.phone.errors %}
-              <div class="text-danger small">{{ form.phone.errors }}</div>
+            <div class="text-danger small">{{ form.phone.errors }}</div>
             {% endif %}
           </div>
+
+          <!-- District Selection -->
+          <div class="mb-3">
+            <label for="district" class="form-label ">Select District</label>
+            <select id="district" name="district" class="form-select" onchange="updateShipping()">
+              <option value="Dhaka">Dhaka</option>
+              <option value="Chittagong">Chittagong</option>
+              <option value="Rajshahi">Rajshahi</option>
+              <option value="Khulna">Khulna</option>
+              <option value="Barishal">Barishal</option>
+              <option value="Sylhet">Sylhet</option>
+              <option value="Rangpur">Rangpur</option>
+              <option value="Mymensingh">Mymensingh</option>
+              <!-- Add all districts if you want -->
+            </select>
+          </div>
+
 
           <!-- Address -->
           <div class="mb-3">
             <label class="form-label">Address</label>
-            <textarea name="address" class="form-control" rows="2" required>{{ form.address.value|default:'' }}</textarea>
+            <textarea name="address" class="form-control" rows="2"
+              required>{{ form.address.value|default:'' }}</textarea>
             {% if form.address.errors %}
-              <div class="text-danger small">{{ form.address.errors }}</div>
+            <div class="text-danger small">{{ form.address.errors }}</div>
             {% endif %}
           </div>
 
-         
+
 
           <!-- Payment Method -->
           <div class="card mb-4 shadow-sm border-0">
@@ -65,43 +84,72 @@
 
           <!-- Submit Button -->
           <div class="text-center">
-            <button type="submit" class="btn   w-100 py-2" style="background-color: #f28124;color: white; ">Place Order</button>
+            <button type="submit" class="btn w-100 py-2" style="background-color: #f28124;color: white; ">Place
+              Order</button>
           </div>
 
         </form>
       </div>
     </div>
-<!-- Right Column -->
-<div class="col-12 col-md-4">
-  <div class="card shadow-sm p-3">
-    <h5 class="fw-semibold mb-3 text-center">Your Products</h5>
+    <!-- Right Column -->
+    <div class="col-12 col-md-4">
+      <div class="card shadow-sm p-3">
+        <h5 class="fw-semibold mb-3 text-center">Your Products</h5>
 
-    {% if cart_items %}
-      {% for slug, item in cart_items.items %}
-        <div class="d-flex align-items-center mb-3 border-bottom pb-2 justify-content-between">
-          <div class="d-flex align-items-center">
-            <img src="{{ item.image }}" class="me-3 rounded" style="width:60px; height:60px; object-fit:cover;">
-            <div>
-              <small class="mb-0 fw-semibold">{{ item.title }}</small>
-            </br>
-              <small class="text-muted">৳{{ item.price }}</small>
+        {% if cart_items %}
+        <div id="cart-items">
+          {% for slug, item in cart_items.items %}
+          <div class="d-flex align-items-center mb-3 border-bottom pb-2 justify-content-between cart-item"
+            data-price="{{ item.price }}" data-slug="{{ slug }}">
+            <div class="d-flex align-items-center">
+              <img src="{{ item.image }}" class="me-3 rounded" style="width:60px; height:60px; object-fit:cover;">
+              <div>
+                <small class="mb-0 fw-semibold">{{ item.title }}</small><br>
+                <small class="text-muted">৳{{ item.price }}</small>
+              </div>
+            </div>
+
+            <!-- Quantity Controls -->
+            <div class="d-flex align-items-center gap-1">
+              <button type="button" class="btn btn-outline-secondary btn-sm decrease-btn"
+                data-slug="{{ slug }}">-</button>
+              <input type="text" id="qty-{{ slug }}" class="form-control form-control-sm text-center qty-input"
+                style="width:40px;" value="{{ item.quantity }}" readonly>
+              <button type="button" class="btn btn-outline-secondary btn-sm increase-btn"
+                data-slug="{{ slug }}">+</button>
             </div>
           </div>
+          {% endfor %}
+        </div>
 
-          <!-- Quantity Controls -->
-          <div class="d-flex align-items-center gap-1">
-            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseItemQty('{{ slug }}')">-</button>
-            <input type="text" class="form-control form-control-sm text-center" style="width:40px;"
-                   id="qty-{{ slug }}" value="{{ item.quantity }}" readonly>
-            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseItemQty('{{ slug }}')">+</button>
+        <!-- Order Summary -->
+        <div class="mt-2">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal</span>
+            <span id="subtotal">৳0</span>
+          </div>
+
+          <!-- separator line -->
+          <div class="border-top my-3"></div>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span>Shipping</span>
+            <span id="shipping">৳0</span>
+          </div>
+
+          <!-- separator line -->
+          <div class="border-top my-3"></div>
+          <div class="d-flex justify-content-between fw-bold  pt-2">
+            <span>Total</span>
+            <span id="total">৳0</span>
           </div>
         </div>
-      {% endfor %}
-    {% else %}
-      <p class="text-muted text-center">No products selected.</p>
-    {% endif %}
-  </div>
-</div>
+
+        {% else %}
+        <p class="text-muted text-center">No products selected.</p>
+        {% endif %}
+      </div>
+    </div>
 
 
 
@@ -112,63 +160,89 @@
 
 <!-- Quantity JS -->
 <script>
+  const fmt = n => '৳' + (Number.isInteger(n) ? n : n.toFixed(2));
 
-function decreaseItemQty(slug) {
-  const input = document.getElementById(`qty-${slug}`);
-  let qty = parseInt(input.value);
-  if (qty > 1) {
-    qty--;
-    input.value = qty;
-    updateCartItem(slug, qty);
+  /* Calculate subtotal by reading data-price and qty inputs */
+  function calculateSubtotal() {
+    let subtotal = 0;
+    document.querySelectorAll('.cart-item').forEach(item => {
+      const price = parseFloat(item.dataset.price) || 0;
+      const slug = item.dataset.slug;
+      const qtyInput = document.getElementById(`qty-${slug}`);
+      const qty = parseInt(qtyInput?.value) || 0;
+      subtotal += price * qty;
+    });
+    document.getElementById('subtotal').textContent = fmt(subtotal);
+    return subtotal;
   }
-}
 
-function increaseItemQty(slug) {
-  const input = document.getElementById(`qty-${slug}`);
-  let qty = parseInt(input.value);
-  qty++;
-  input.value = qty;
-  updateCartItem(slug, qty);
-}
+  /* Update shipping (based on district) and total; also update hidden inputs */
+  function updateShippingAndTotal() {
+    const districtEl = document.getElementById('district');
+    const district = districtEl ? districtEl.value : '';
+    const subtotal = calculateSubtotal();
 
-// Update localStorage cart when quantity changes
-function updateCartItem(slug, qty) {
-  let cart = JSON.parse(localStorage.getItem("cart") || "{}");
-  if (cart[slug]) {
-    cart[slug].quantity = qty;
-    localStorage.setItem("cart", JSON.stringify(cart));
+    let shipping = 80
+    if (district === 'Dhaka') shipping = 80;
+    else if (district) shipping = 150; // any other selected district
+
+    const total = subtotal + shipping;
+
+    document.getElementById('shipping').textContent = fmt(shipping);
+    document.getElementById('total').textContent = fmt(total);
+
+    // update hidden inputs so form submit sends these values
+    const shipInput = document.getElementById('shipping_charge');
+    const districtInput = document.getElementById('selected_district');
+    if (shipInput) shipInput.value = shipping;
+    if (districtInput) districtInput.value = district;
   }
-}
 
-document.addEventListener("DOMContentLoaded", function () {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const cartContainer = document.getElementById("cart-items");
-  const cartTotal = document.getElementById("cart-total");
-  const cartDataInput = document.getElementById("cart_data");
+  /* Sync localStorage cart (if you use it) */
+  function updateCartLocalStorage(slug, qty) {
+    try {
+      const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+      if (cart[slug]) {
+        cart[slug].quantity = qty;
+        localStorage.setItem('cart', JSON.stringify(cart));
+      }
+    } catch (e) { /* ignore if no localStorage cart */ }
+  }
 
-  let total = 0;
-  cartContainer.innerHTML = "";
+  /* Attach event listeners after DOM ready */
+  document.addEventListener('DOMContentLoaded', () => {
+    // initial calc
+    updateShippingAndTotal();
 
-  cart.forEach(item => {
-    const subtotal = item.price * item.quantity;
-    total += subtotal;
+    // district change
+    const districtEl = document.getElementById('district');
+    if (districtEl) districtEl.addEventListener('change', updateShippingAndTotal);
 
-    const productHTML = `
-      <div class="d-flex align-items-center mb-3">
-        <img src="${item.image}" class="me-3 rounded" style="width: 60px; height: 60px; object-fit: cover;">
-        <div>
-          <div class="fw-semibold">${item.title}</div>
-          <div class="text-muted small">৳${item.price} × ${item.quantity}</div>
-          <div class="fw-semibold">৳${subtotal}</div>
-        </div>
-      </div>
-    `;
-    cartContainer.insertAdjacentHTML("beforeend", productHTML);
+    // increase buttons
+    document.querySelectorAll('.increase-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slug = btn.dataset.slug;
+        const input = document.getElementById(`qty-${slug}`);
+        if (!input) return;
+        input.value = String((parseInt(input.value) || 0) + 1);
+        updateCartLocalStorage(slug, parseInt(input.value));
+        updateShippingAndTotal();
+      });
+    });
+
+    // decrease buttons
+    document.querySelectorAll('.decrease-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slug = btn.dataset.slug;
+        const input = document.getElementById(`qty-${slug}`);
+        if (!input) return;
+        const current = Math.max(1, (parseInt(input.value) || 1) - 1);
+        input.value = String(current);
+        updateCartLocalStorage(slug, current);
+        updateShippingAndTotal();
+      });
+    });
   });
-
-  cartTotal.textContent = `৳${total}`;
-  cartDataInput.value = JSON.stringify(cart);
-});
 
 </script>
 {% endblock %}

@@ -10,7 +10,7 @@ path('', views.home, name='home'),
 path('product/<str:id>/', views.product_detail, name='product_detail'),
 path('product/<str:id>/order/', views.order_create, name='order_create'),
 
-    path('cart/checkout/', views.cart_checkout, name='cart_checkout'),
+    path('cart/checkout/', views.order_create, name='cart_checkout'),
     path('order/success/', views.order_success, name='order_success'),
 
 path('products', views.all_products, name='products'),

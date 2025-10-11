@@ -226,7 +226,7 @@
     }
     // Create form and submit POST with cart JSON
     const form = document.createElement('form');
-    form.method = 'POST';
+    form.method = 'GET';
     form.action = '/cart/checkout/';  // adjust url if different
     // CSRF token: attempt to read from cookie (Django default) and add hidden field
     const csrfToken = getCookie('csrftoken');

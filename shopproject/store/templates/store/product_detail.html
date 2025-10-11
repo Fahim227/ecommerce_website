@@ -3,290 +3,336 @@
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{{ product.title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
+        body {
+            background-color: #f8f9fa;
+        }
 
         .product-container {
             background: #fff;
             border-radius: 8px;
-            padding: 1.2rem 1.5rem;   /* reduced padding */
+            padding: 1.2rem 1.5rem;
+            /* reduced padding */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-            margin-top: 1rem;        /* reduced top margin */
-            margin-bottom: 1rem;     /* small bottom margin */
+            margin-top: 1rem;
+            /* reduced top margin */
+            margin-bottom: 1rem;
+            /* small bottom margin */
         }
 
-        .product-title { font-size: 2.66666rem; font-weight: var(--ast-blog-title-font-weight,normal); margin-bottom: 0.5rem; }
-        .current-price { font-size: 1.5rem; font-weight: 700; }
-        .old-price { text-decoration: line-through; font-weight: 400; color: #364151; }
+        .product-title {
+            font-size: 2.66666rem;
+            font-weight: var(--ast-blog-title-font-weight, normal);
+            margin-bottom: 0.5rem;
+        }
+
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            font-weight: 400;
+            color: #364151;
+        }
+
         /* .thumbnail { cursor: pointer; border: 2px solid transparent; } */
         /* .thumbnail.active { border-color: #0d6efd; } */
-        .payment-option-box { border: 1px solid #dee2e6; padding: 1rem; border-radius: 8px; cursor: pointer; }
-        .payment-option-box.active { border-color: #0d6efd; background-color: #e7f1ff; }
-        .buy-btn { background-color: #0d6efd; color: #fff; font-size: 1.1rem; padding: 0.75rem 2rem; border-radius: 6px; width: 100%; }
-        .add-to-cart-btn { background-color: #f28124; color: #fff; font-size: 1.1rem; padding: 0.75rem 2rem; border-radius: 6px; width: 100%; }
+        .payment-option-box {
+            border: 1px solid #dee2e6;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .payment-option-box.active {
+            border-color: #0d6efd;
+            background-color: #e7f1ff;
+        }
+
+        .buy-btn {
+            background-color: #0d6efd;
+            color: #fff;
+            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            width: 100%;
+        }
+
+        .add-to-cart-btn {
+            background-color: #f28124;
+            color: #fff;
+            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            width: 100%;
+        }
 
         .btn-add-to-cart {
-  background-color: #0d6efd;
-  color: white;
-  border: none;
-  transition: transform 0.1s ease, background-color 0.2s ease;
-}
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            transition: transform 0.1s ease, background-color 0.2s ease;
+        }
 
-.btn-add-to-cart:hover,
-.btn-add-to-cart:focus {
-  background-color: #0d6efd;
-  color: white;
-  outline: none;
-  box-shadow: none;
-}
+        .btn-add-to-cart:hover,
+        .btn-add-to-cart:focus {
+            background-color: #0d6efd;
+            color: white;
+            outline: none;
+            box-shadow: none;
+        }
 
-.btn-add-to-cart:active {
-  transform: scale(0.96); /* slight tap effect */
-  background-color: #0d6efd; /* optional: slightly darker during press */
-}
+        .btn-add-to-cart:active {
+            transform: scale(0.96);
+            /* slight tap effect */
+            background-color: #0d6efd;
+            /* optional: slightly darker during press */
+        }
 
 
         .thumbnail {
-    cursor: pointer;
-    border: 2px solid transparent;
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 8px;
-    transition: border-color 0.2s;
-}
+            cursor: pointer;
+            border: 2px solid transparent;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
 
-.thumbnail.active {
-    border-color: #f28124;
-}
+        .thumbnail.active {
+            border-color: #f28124;
+        }
 
-.qty-group {
-  width: 90px;                /* slightly bigger than 80px to avoid breaking */
-}
+        .qty-group {
+            width: 90px;
+            /* slightly bigger than 80px to avoid breaking */
+        }
 
-.qty-group .btn {
-  padding: 2px 6px;           /* tighter buttons */
-  font-size: 1.0rem;
-}
+        .qty-group .btn {
+            padding: 2px 6px;
+            /* tighter buttons */
+            font-size: 1.0rem;
+        }
 
-.qty-group input {
-  padding: 2px;
-  font-size: 0.8rem;
-  height: 40px;
-  min-width: 50px;            /* ensures it doesn’t collapse */
-  text-align: center;
-}
+        .qty-group input {
+            padding: 2px;
+            font-size: 0.8rem;
+            height: 40px;
+            min-width: 50px;
+            /* ensures it doesn’t collapse */
+            text-align: center;
+        }
 
-#mainImage {
-    width: 500px;
-    height: 500px;
-    object-fit: cover;
-    border-radius: 12px;
-    border: 2px solid #dee2e6;
-    transition: 0.3s ease;
-}
-
-
+        #mainImage {
+            width: 500px;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid #dee2e6;
+            transition: 0.3s ease;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container product-container">
-    <div class="row align-items-start">
-        <!-- LEFT: Images -->
-        <!-- Product Image Section -->
-<div class="d-flex align-items-start gap-3 col-md-5">
-    <!-- Gallery Thumbnails -->
-    {% if gallery_images %}
-    <div class="d-flex flex-column gap-2">
-        {% for img in gallery_images %}
-            <img src="{{ img.image.url }}"
-                 class="thumbnail {% if forloop.first %}active{% endif %}"
-                 style="width: 70px; height: 70px; object-fit: cover; cursor: pointer; border-radius: 8px;"
-                 onclick="changeImage(this)">
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- Main Image -->
-    <div>
-        <img id="mainImage"
-             src="{{ product.image.url }}"
-             class="img-fluid"
-             style="max-width: 400px; max-height: 400px; object-fit: contain; border: none; box-shadow: none;"
-             alt="{{ product.title }}">
-    </div>
-</div>
-
-
-        <!-- RIGHT: Product Details -->
-        <div class="col-md-7">
-            <h1 class="product-title">{{ product.title }}</h1>
-
-            <div class="d-flex flex-wrap gap-2 mb-2">
-                
-                <span class="badge bg-success">In Stock</span>
-                <span class="badge bg-secondary">Rating: {{ product.rating|default:"0" }} ⭐</span>
-                <span class="badge bg-dark">Reviews: {{ product.review_count|default:"0" }}</span>
-            </div>
-
-            <div class="mb-3">
-
-                   <p class="text-muted">{{ product.short_description }}</p>
-    <div class="current-price display-6 fw-bold text-dark">
-        ৳ {{ product.discounted_price }}
-    </div>
-
-    {% if product.discount_percentage %}
-        <div class="text-muted fs-5  ">
-            <span class="old-price">৳ {{ product.price }}</span>
-            <span class="text-danger fw-semibold">
-                -{{ product.discount_percentage }}%
-            </span>
-        </div>
-
-    {% endif %}
-</div>
-
-
-         
-
-            
-
-            <!-- Buy + Cart Button -->
-            <div class="mt-4 d-flex align-items-center gap-3">
-               
-        
-                    <a href="{% url 'store:order_create' product.id %}" class="buy-btn btn" style="background-color: #f28124;color: white; ">
-  Buy Now
-</a>
-
-<button
-  id="addToCartBtn"
-  class="btn btn-orange add-to-cart buy-btn   btn-add-to-cart"
-  data-id="{{ product.uid|default:product.id }}"
-  data-title="{{ product.title|escapejs }}"
-  data-price="{{ product.price }}"
-  data-image="{% if product.image %}{{ product.image.url }}{% else %}{% static 'store/img/placeholder.png' %}{% endif %}"
-  data-qty="1"
-> Add to Cart</button>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="container product-container">
-    
-<div>
-<h1 class="product-title">Description</h1>
-         <p class="text-muted">{{ product.short_description }}</p>
-            <p>{{ product.description|linebreaks }}</p>
-      
-    </div>
-</div>
-
-<div class="container product-container mt-5">
-    <h2 class="product-title mb-3">Related Products</h2>
-
-    <div id="related-products-section">
-        <div class="row">
-            {% for product in related_products %}
-               {% include "store/_store_product_card.html" %}
-            {% empty %}
-                <p class="text-muted">No related products found.</p>
-            {% endfor %}
-        </div>
-
-        {% if related_products.has_other_pages %}
-        <nav aria-label="Related product pagination" class="mt-3">
-            <ul class="pagination justify-content-center">
-                {% if related_products.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page={{ related_products.previous_page_number }}">Previous</a></li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+    <div class="container product-container">
+        <div class="row align-items-start">
+            <!-- LEFT: Images -->
+            <!-- Product Image Section -->
+            <div class="d-flex align-items-start gap-3 col-md-5">
+                <!-- Gallery Thumbnails -->
+                {% if gallery_images %}
+                <div class="d-flex flex-column gap-2">
+                    {% for img in gallery_images %}
+                    <img src="{{ img.image.url }}" class="thumbnail {% if forloop.first %}active{% endif %}"
+                        style="width: 70px; height: 70px; object-fit: cover; cursor: pointer; border-radius: 8px;"
+                        onclick="changeImage(this)">
+                    {% endfor %}
+                </div>
                 {% endif %}
 
-                {% for num in related_products.paginator.page_range %}
-                    {% if related_products.number == num %}
-                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                    {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                <!-- Main Image -->
+                <div>
+                    <img id="mainImage" src="{{ product.image.url }}" class="img-fluid"
+                        style="max-width: 400px; max-height: 400px; object-fit: contain; border: none; box-shadow: none;"
+                        alt="{{ product.title }}">
+                </div>
+            </div>
+
+
+            <!-- RIGHT: Product Details -->
+            <div class="col-md-7">
+                <h1 class="product-title">{{ product.title }}</h1>
+
+                <div class="d-flex flex-wrap gap-2 mb-2">
+
+                    <span class="badge bg-success">In Stock</span>
+                    <span class="badge bg-secondary">Rating: {{ product.rating|default:"0" }} ⭐</span>
+                    <span class="badge bg-dark">Reviews: {{ product.review_count|default:"0" }}</span>
+                </div>
+
+                <div class="mb-3">
+
+                    <p class="text-muted">{{ product.short_description }}</p>
+                    <div class="current-price display-6 fw-bold text-dark">
+                        ৳ {{ product.discounted_price }}
+                    </div>
+
+                    {% if product.discount_percentage %}
+                    <div class="text-muted fs-5  ">
+                        <span class="old-price">৳ {{ product.price }}</span>
+                        <span class="text-danger fw-semibold">
+                            -{{ product.discount_percentage }}%
+                        </span>
+                    </div>
+
                     {% endif %}
-                {% endfor %}
+                </div>
 
-                {% if related_products.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ related_products.next_page_number }}">Next</a></li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">Next</span></li>
-                {% endif %}
-            </ul>
-        </nav>
-        {% endif %}
+
+
+
+
+
+                <!-- Buy + Cart Button -->
+                <div class="mt-4 d-flex align-items-center gap-3">
+
+
+                    <a href="{% url 'store:order_create' product.id %}" class="buy-btn btn"
+                        style="background-color: #f28124;color: white; ">
+                        Buy Now
+                    </a>
+
+                    <button id="addToCartBtn" class="btn btn-orange add-to-cart buy-btn   btn-add-to-cart"
+                        data-id="{{ product.uid|default:product.id }}" data-title="{{ product.title|escapejs }}"
+                        data-price="{{ product.price }}"
+                        data-image="{% if product.image %}{{ product.image.url }}{% else %}{% static 'store/img/placeholder.png' %}{% endif %}"
+                        data-qty="1"> Add to Cart</button>
+
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+
+    <div class="container product-container">
+
+        <div>
+            <h1 class="product-title">Description</h1>
+            <p class="text-muted">{{ product.short_description }}</p>
+            <p>{{ product.description|linebreaks }}</p>
+
+        </div>
+    </div>
+
+    <div class="container product-container mt-5">
+        <h2 class="product-title mb-3">Related Products</h2>
+
+        <div id="related-products-section">
+            <div class="row">
+                {% for product in related_products %}
+                {% include "store/_store_product_card.html" %}
+                {% empty %}
+                <p class="text-muted">No related products found.</p>
+                {% endfor %}
+            </div>
+
+            {% if related_products.has_other_pages %}
+            <nav aria-label="Related product pagination" class="mt-3">
+                <ul class="pagination justify-content-center">
+                    {% if related_products.has_previous %}
+                    <li class="page-item"><a class="page-link"
+                            href="?page={{ related_products.previous_page_number }}">Previous</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    {% endif %}
+
+                    {% for num in related_products.paginator.page_range %}
+                    {% if related_products.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if related_products.has_next %}
+                    <li class="page-item"><a class="page-link"
+                            href="?page={{ related_products.next_page_number }}">Next</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
 
 
 
-<script>
-    function changeImage(el) {
-        document.getElementById('mainImage').src = el.src;
-        document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    function selectPayment(el) {
-        document.querySelectorAll('.payment-option-box').forEach(box => box.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    function decreaseQty() {
-        let qty = document.getElementById('qty');
-        if (parseInt(qty.value) > 1) qty.value = parseInt(qty.value) - 1;
-    }
-
-    function increaseQty() {
-        let qty = document.getElementById('qty');
-        qty.value = parseInt(qty.value) + 1;
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-    const relatedSection = document.getElementById('related-products-section');
-
-    // Event delegation for pagination links
-    relatedSection.addEventListener('click', function(e) {
-        const link = e.target.closest('a.page-link');
-        if (link) {
-            e.preventDefault(); // prevent full reload
-            const url = link.getAttribute('href');
-
-            fetch(url, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' } // AJAX header
-            })
-            .then(response => response.text())
-            .then(html => {
-                // Extract the new related section HTML from response
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const newSection = doc.querySelector('#related-products-section');
-                if (newSection) {
-                    relatedSection.innerHTML = newSection.innerHTML;
-                }
-            })
-            .catch(err => console.error('Pagination error:', err));
+    <script>
+        function changeImage(el) {
+            document.getElementById('mainImage').src = el.src;
+            document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('active'));
+            el.classList.add('active');
         }
-    });
-});
 
-    
-</script>
+        function selectPayment(el) {
+            document.querySelectorAll('.payment-option-box').forEach(box => box.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function decreaseQty() {
+            let qty = document.getElementById('qty');
+            if (parseInt(qty.value) > 1) qty.value = parseInt(qty.value) - 1;
+        }
+
+        function increaseQty() {
+            let qty = document.getElementById('qty');
+            qty.value = parseInt(qty.value) + 1;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const relatedSection = document.getElementById('related-products-section');
+
+            // Event delegation for pagination links
+            relatedSection.addEventListener('click', function (e) {
+                const link = e.target.closest('a.page-link');
+                if (link) {
+                    e.preventDefault(); // prevent full reload
+                    const url = link.getAttribute('href');
+
+                    fetch(url, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' } // AJAX header
+                    })
+                        .then(response => response.text())
+                        .then(html => {
+                            // Extract the new related section HTML from response
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newSection = doc.querySelector('#related-products-section');
+                            if (newSection) {
+                                relatedSection.innerHTML = newSection.innerHTML;
+                            }
+                        })
+                        .catch(err => console.error('Pagination error:', err));
+                }
+            });
+        });
+
+
+    </script>
 
 </body>
+
 </html>
 
 {% endblock %}

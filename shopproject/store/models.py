@@ -59,7 +59,11 @@ class Order(models.Model):
     full_name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
+    district = models.CharField(max_length=55)
     address = models.TextField()
+    shipping_charge = models.IntegerField()
+    subtotal = models.IntegerField()
+    total = models.IntegerField()
     payment_method = models.CharField(max_length=20, default="COD")
     created_at = models.DateTimeField(auto_now_add=True)
 

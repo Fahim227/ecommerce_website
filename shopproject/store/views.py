@@ -1,5 +1,3 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
 from django.contrib import messages
 from .models import Product, Category
 from .forms import OrderForm
@@ -7,6 +5,15 @@ from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Product, OrderItem
+
+import json
+from .forms import OrderForm
 
 
 def home(request):
@@ -70,14 +77,10 @@ def all_products(request):
     return render(request, 'store/all_products.html', {'page_obj': page_obj})
 
 
-# store/views.py
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
-import json
-
 @csrf_exempt  # optional if you’re handling CSRF manually in JS (but you already do)
 def cart_checkout(request):
     if request.method == 'POST':
+        
         cart_json = request.POST.get('cart_json')
         if not cart_json:
             return redirect('store:order_success')  # fallback if empty cart
@@ -99,16 +102,11 @@ def cart_checkout(request):
     return redirect('store:order_success')
     
 
-
-import json
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Order, OrderItem
-from .forms import OrderForm
-
 def order_create(request, id=None):
+
     """
-    Handles both:
-    - Buy Now (single product via slug)
+    Handles:
+    - Buy Now (single product via id)
     - Cart Checkout (multiple products via POST cart_json)
     """
     cart_items = {}
@@ -116,29 +114,76 @@ def order_create(request, id=None):
     if request.method == "POST":
         form = OrderForm(request.POST)
         cart_json = request.POST.get("cart_json")
+        print("cart_items",request.POST.get("cart_items"))
+
         if form.is_valid():
-            order = form.save()
-            
-            # Process cart items if sent
+            order = form.save(commit=False)
+
+            # -------------------------------
+            # 🧮 Calculate subtotal
+            # -------------------------------
+            subtotal = 0
+            cart_items_data = {}
+
             if cart_json:
                 try:
                     cart_items_data = json.loads(cart_json)
                 except json.JSONDecodeError:
                     cart_items_data = {}
+                print("cart_items_data",cart_items_data)
+                for pid, item in cart_items_data.items():
+                    try:
+                        product = Product.objects.get(id=pid)
+                        subtotal += float(product.price) * int(item["quantity"])
+                    except Product.DoesNotExist:
+                        continue
 
-                for id, item in cart_items_data.items():
-                    product = Product.objects.get(id=id)
-                    quantity = int(item["quantity"])
-                    OrderItem.objects.create(
-                        order=order,
-                        product=product,
-                        quantity=quantity,
-                        price=product.price
-                    )
+            elif id:  # Single "Buy Now" case
+                product = get_object_or_404(Product, id=id)
+                quantity = int(request.POST.get("quantity", 1))
+                subtotal += float(product.price) * quantity
+                print("Buy Now")
+            # -------------------------------
+            # 🚚 Shipping logic based on district
+            # -------------------------------
+            district = form.cleaned_data.get("district", "").lower()
+            if district == "dhaka":
+                shipping_charge = 80
+            else:
+                shipping_charge = 150
 
-            # Process single Buy Now product if slug provided and no cart
-            elif slug:
-                product = get_object_or_404(Product, slug=slug)
+            # -------------------------------
+            # 💰 Final total
+            # -------------------------------
+            total = subtotal + shipping_charge
+
+            # -------------------------------
+            # Save order with calculated values
+            # -------------------------------
+            print("subtotal",subtotal)
+            print("total",total)
+            order.subtotal = subtotal
+            order.shipping_charge = shipping_charge
+            order.total = total
+            order.save()
+
+            # -------------------------------
+            # Save order items
+            # -------------------------------
+            if cart_json:
+                for pid, item in cart_items_data.items():
+                    try:
+                        product = Product.objects.get(id=pid)
+                        OrderItem.objects.create(
+                            order=order,
+                            product=product,
+                            quantity=int(item["quantity"]),
+                            price=product.price
+                        )
+                    except Product.DoesNotExist:
+                        continue
+            elif id:
+                product = get_object_or_404(Product, id=id)
                 quantity = int(request.POST.get("quantity", 1))
                 OrderItem.objects.create(
                     order=order,
@@ -147,31 +192,38 @@ def order_create(request, id=None):
                     price=product.price
                 )
 
-            # Add success message
-            messages.success(request, '✅ Your order has been confirmed! Thank you.')
-            # Redirect to success page
-            return redirect('store:order_success')
+            messages.success(request, "✅ Your order has been confirmed! Thank you.")
+            return redirect("store:order_success")
+
         else:
-            messages.error(request, '❌ There was an error with your order. Please check the details.')
+            messages.error(request, "❌ There was an error with your order. Please check the details.")
     else:
         form = OrderForm()
-        # Prepare cart_items for template display
+
+        # 🛒 Prepare single product preview if direct buy
         if id and not request.GET.get("cart_checkout"):
             product = get_object_or_404(Product, id=id)
             cart_items = {
-                product.slug: {
+                product.id: {
                     "name": product.title,
                     "price": float(product.price),
                     "quantity": 1,
-                    "image": product.image.url if product.image else ""
+                    "image": product.image.url if product.image else "",
                 }
             }
+        else:
+            cart_json = request.GET.get('cart_json')
+           
+
+            try:
+                cart_items = json.loads(cart_json)
+            except json.JSONDecodeError:
+                cart_items = {}
 
     return render(request, "store/order_form.html", {
         "form": form,
         "cart_items": cart_items
     })
-
 
 # def order_create(request, slug):
 #     product = get_object_or_404(Product, slug=slug)
