@@ -4,7 +4,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-change-me'
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.0.105']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.0.106']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
