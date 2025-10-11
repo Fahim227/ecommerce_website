@@ -9,7 +9,7 @@
       <div class="card shadow-sm p-4">
         <h4 class="mb-4 fw-semibold text-center">Place Your Order</h4>
 
-        <form method="POST">
+        <form method="POST" id="order-form">
           {% csrf_token %}
 
           <!-- Full Name -->
@@ -82,6 +82,12 @@
             </div>
           </div>
 
+          <!-- Hidden fields to send calculated data -->
+          <input type="hidden" name="cart_json" id="cart_json">
+          <input type="hidden" name="subtotal" id="subtotal_input">
+          <input type="hidden" name="shipping_charge" id="shipping_charge">
+          <input type="hidden" name="total" id="total_input">
+
           <!-- Submit Button -->
           <div class="text-center">
             <button type="submit" class="btn w-100 py-2" style="background-color: #f28124;color: white; ">Place
@@ -111,8 +117,8 @@
 
             <!-- Quantity Controls -->
             <div class="d-flex align-items-center gap-1">
-              <button type="button" class="btn btn-outline-secondary btn-sm decrease-btn"
-                data-slug="{{ slug }}">-</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm decrease-btn" data-slug="{{ slug }}"
+                 >-</button>
               <input type="text" id="qty-{{ slug }}" class="form-control form-control-sm text-center qty-input"
                 style="width:40px;" value="{{ item.quantity }}" readonly>
               <button type="button" class="btn btn-outline-secondary btn-sm increase-btn"
@@ -160,6 +166,18 @@
 
 <!-- Quantity JS -->
 <script>
+  const CART_KEY = 'picksymart_cart';
+
+
+  // Utilities
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem(CART_KEY) || '{}');
+    } catch (e) {
+      console.error('cart parse error', e);
+      return {};
+    }
+  }
   const fmt = n => '৳' + (Number.isInteger(n) ? n : n.toFixed(2));
 
   /* Calculate subtotal by reading data-price and qty inputs */
@@ -201,10 +219,11 @@
   /* Sync localStorage cart (if you use it) */
   function updateCartLocalStorage(slug, qty) {
     try {
-      const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+       
+      const cart = getCart();
       if (cart[slug]) {
         cart[slug].quantity = qty;
-        localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
       }
     } catch (e) { /* ignore if no localStorage cart */ }
   }
@@ -242,6 +261,40 @@
         updateShippingAndTotal();
       });
     });
+  });
+
+
+  function updateShippingAndTotal() {
+    const districtEl = document.getElementById('district');
+    const district = districtEl ? districtEl.value : '';
+    const subtotal = calculateSubtotal();
+
+    let shipping = district === 'Dhaka' ? 80 : (district ? 150 : 0);
+    const total = subtotal + shipping;
+
+    document.getElementById('shipping').textContent = fmt(shipping);
+    document.getElementById('total').textContent = fmt(total);
+
+    // populate hidden inputs for form submission
+    document.getElementById('shipping_charge').value = shipping;
+    document.getElementById('total_input').value = total;
+    document.getElementById('subtotal_input').value = subtotal;
+
+    // serialize cart items for hidden field
+    const cartObj = {};
+    document.querySelectorAll('.cart-item').forEach(item => {
+      const slug = item.dataset.slug;
+      const price = parseFloat(item.dataset.price);
+      const qty = parseInt(document.getElementById(`qty-${slug}`).value);
+      cartObj[slug] = { price, quantity: qty };
+    });
+    const cart = getCart();
+    document.getElementById('cart_json').value = JSON.stringify(cart);
+  }
+
+  // attach to form submit
+  document.getElementById('order-form').addEventListener('submit', function (e) {
+    updateShippingAndTotal(); // ensure hidden fields updated before submit
   });
 
 </script>

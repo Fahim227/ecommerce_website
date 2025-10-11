@@ -192,13 +192,10 @@
     if (cartOverlay) cartOverlay.onclick = closeCart;
     if (clearCartBtn) clearCartBtn.onclick = () => { clearCart(); };
     if (checkoutBtn) checkoutBtn.onclick = (e) => {
-    // window.location.href = "{% url 'store:order_create' %}";
+      
 
 
-
-      e.preventDefault();
-      // example: redirect to checkout page and pass cart (the server can parse posted JSON)
-      // We'll redirect to /cart/checkout/ and let JS POST cart there.
+      e.preventDefault(); 
       postCartToCheckout();
     };
     // Add-to-cart buttons: elements with class 'add-to-cart' expected to have data attributes:

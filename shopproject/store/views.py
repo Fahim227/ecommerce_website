@@ -114,7 +114,13 @@ def order_create(request, id=None):
     if request.method == "POST":
         form = OrderForm(request.POST)
         cart_json = request.POST.get("cart_json")
-        print("cart_items",request.POST.get("cart_items"))
+        subtotal = float(request.POST.get('subtotal', 0))
+        shipping = float(request.POST.get('shipping_charge', 0))
+        total = float(request.POST.get('total', 0))
+
+        print("total",total)
+        print("subtotal",subtotal)
+        print("cart_json",cart_json)
 
         if form.is_valid():
             order = form.save(commit=False)
