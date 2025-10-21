@@ -10,11 +10,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2.1.0
       with:
-        fetch-depth: 0
-    - name: FTP-Deploy-Action
+        fetch-depth: 1
+
+    
+    # Step 2: Debugging step - checks if .git is available
+    - name: Verify git repo
+      run: |
+          echo "Verifying .git folder presence..."
+          git rev-parse --is-inside-work-tree
+          ls -a
+
+    # Step 3: Deploy to cPanel via FTP using git-ftp
+    - name: Deploy to FTP
       uses: SamKirkland/FTP-Deploy-Action@3.1.1
       with:
-        ftp-server: ${{ secrets.FTP_SERVER }}
-        ftp-username: ${{ secrets.FTP_USERNAME }}
-        ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./
+          ftp-server: ${{ secrets.FTP_SERVER }}
+          ftp-username: ${{ secrets.FTP_USERNAME }}
+          ftp-password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
