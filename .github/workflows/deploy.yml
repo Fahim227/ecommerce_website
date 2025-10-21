@@ -31,5 +31,5 @@ jobs:
           ftp-server: ${{ secrets.FTP_SERVER }}
           ftp-username: ${{ secrets.FTP_USERNAME }}
           ftp-password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./  # keep this at the level where .git exists
-          git-ftp-args: --syncroot=ecommerce_website
+          local-dir: ecommerce_website/shopproject/
+          git-ftp-args: --auto-init
