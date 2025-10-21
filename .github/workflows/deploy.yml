@@ -1,35 +1,23 @@
-name: Publish Website to CPanel
+name: 🚀 Deploy Django to cPanel
+
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo (includes .git)
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # Keep full history for git-ftp
+        uses: actions/checkout@v3
 
-      # 2️⃣ Debug workspace structure
-      - name: Debug workspace
-        run: |
-          echo "Current path: $(pwd)"
-          echo "Folder structure:"
-          ls -R | head -n 40
-          echo "Check if .git exists:"
-          find . -name ".git"
-
-      # 3️⃣ Deploy to FTP
-      - name: Deploy to FTP (CPanel)
+      - name: 📂 Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
           ftp-server: ${{ secrets.FTP_SERVER }}
           ftp-username: ${{ secrets.FTP_USERNAME }}
           ftp-password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: shopproject/
-          git-ftp-args: --auto-init
+          local-dir: ecommerce_website/shopproject/
+          dangerous-clean-slate: true
