@@ -1,0 +1,23 @@
+:root {
+  --bs-body-font-family: 'Roboto', sans-serif;
+}
+body { padding-bottom: 40px;    
+    background-color: #fcfcfa; 
+  font-family: var(--bs-body-font-family) !important;
+
+}
+.card-img-top { object-fit: cover; height: 180px; }
+
+ .theme-color {
+        color: #f28124;  
+    }
+
+     .nav {
+        background-color:  #ffffff;  
+    }
+
+
+    .category-card {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
