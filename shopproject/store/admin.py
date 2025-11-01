@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Order, ProductImage, Category, OrderItem
+from .models import Product, Order, ProductImage, Category, OrderItem, StoreConfig
 
 
 @admin.register(Category)
@@ -7,10 +7,14 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'id')
     prepopulated_fields = {'name': ('id',)}
 
+
+@admin.register(StoreConfig)
+class StoreConfigAdmin(admin.ModelAdmin):
+    pass
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('title', 'price')
-    prepopulated_fields = {'id': ('title',)}
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

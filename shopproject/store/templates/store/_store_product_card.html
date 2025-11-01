@@ -42,7 +42,7 @@
     <div class="card-body d-flex flex-column">
       <!-- Product Title -->
       <a href="{% url 'store:product_detail' product.id %}" class="text-decoration-none">
-        <h6 class="card-title text-primary mb-3" style="font-size: 0.95rem; line-height: 1.4;  ">
+        <h6 class="card-title text-primary mb-3" style="font-size: 0.95rem; line-height: 1.4;   ">
           {{ product.title }}
         </h6>
       </a>
@@ -83,7 +83,7 @@
 
 
           <a href="{% url 'store:order_create' product.id %}" class="buy-btn btn w-100 "
-            style="background-color: #f28124;color: white; ">
+            style="background-color: var(--primary-color);color: white; ">
             Buy Now
           </a>
         </div>

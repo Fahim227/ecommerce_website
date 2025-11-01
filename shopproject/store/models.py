@@ -1,7 +1,30 @@
-from django.db import models
 import uuid
 from django.db import models
 from django.utils.text import slugify
+
+class StoreConfig(models.Model):
+    store_name = models.CharField(max_length=255, default="My Shop")
+    logo = models.ImageField(upload_to='branding/', null=True, blank=True)
+    favicon = models.ImageField(upload_to='branding/', null=True, blank=True)
+    
+    primary_color = models.CharField(max_length=20, default="#FF5722")   # Example
+    secondary_color = models.CharField(max_length=20, default="#FFC107")
+    
+    theme_mode = models.CharField(
+        max_length=10,
+        choices=[("light", "Light"), ("dark", "Dark")],
+        default="light"
+    )
+
+    # Ensure only 1 row exists
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super(StoreConfig, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return "Store Configuration"
+
+
 
 
 class Category(models.Model):

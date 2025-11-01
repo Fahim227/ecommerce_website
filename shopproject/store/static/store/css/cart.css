@@ -70,7 +70,7 @@
 }
 
 .btn-orange {
-  background-color: #f28124;
+  background-color: var(--primary-color);
   color: white;
   border: none;
 }

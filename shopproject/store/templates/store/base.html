@@ -20,6 +20,11 @@
 
 
   <style>
+
+    :root {
+        --primary-color: {{ store_config.primary_color }};
+        --secondary-color: {{ store_config.secondary_color }};
+    }
     #floatingCartBtn {
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
@@ -36,7 +41,7 @@
 
     .category-slider {
       scrollbar-width: thin;
-      scrollbar-color: #f28124 #f1f1f1;
+      scrollbar-color: var(--primary-color) #f1f1f1;
     }
 
     .category-slider::-webkit-scrollbar {
@@ -44,7 +49,7 @@
     }
 
     .category-slider::-webkit-scrollbar-thumb {
-      background: #f28124;
+      background: var(--primary-color);
       border-radius: 3px;
     }
 
@@ -59,7 +64,7 @@
     .category-item:hover {
       transform: scale(1.00);
       transition: 0.2s ease;
-      border: var(--bs-border-width) var(--bs-border-style) #f28124 !important;
+      border: var(--bs-border-width) var(--bs-border-style) var(--primary-color) !important;
 
     }
 
@@ -89,7 +94,7 @@
       height: 30px;
       border-radius: 50%;
       background-color: #f8f9fa;
-      color: #f28124;
+      color: var(--primary-color);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -126,7 +131,7 @@
 
 
     .nav-link:hover {
-      color: #f28124 !important;
+      color: var(--primary-color) !important;
       /* Orange hover color */
     }
   </style>
@@ -139,7 +144,7 @@
     <div class="container">
       <!-- Left: Logo -->
       <a class="navbar-brand" href="{% url 'store:home' %}">
-        <img src="/media/products/shop_logo.png" style="width: 80px; height: 80px;" alt="Shop Logo">
+        <img src="{{ store_config.logo.url }}" style="width: 80px; height: 80px;" alt="Shop Logo">
       </a>
 
       <!-- Mobile Toggle -->
@@ -213,7 +218,7 @@
 
 
   <div id="openCartBtn" class="position-fixed d-flex align-items-center justify-content-center"
-    style="bottom: 20px; right: 20px; width: 60px; height: 60px; background-color: #f28124; border-radius: 50%; cursor: pointer; z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+    style="bottom: 20px; right: 20px; width: 60px; height: 60px; background-color: var(--primary-color); border-radius: 50%; cursor: pointer; z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
     <i class="bi bi-cart3 text-white" style="font-size: 1.5rem;"></i>
     <span id="cartCountBadge"
       class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
